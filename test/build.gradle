@@ -12,5 +12,4 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation 'io.github.SD810.ResizeImageJava:0.1'
 }
