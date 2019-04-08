@@ -78,23 +78,31 @@ public class ResizeProcessor {
                 // 작업 시작
                 System.out.println("Starting Job : " + file.getAbsolutePath());
                 try {
+
                     //이미지 처리
                     BufferedImage imgToScale = ImageIO.read(file);
 
                     BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, false);
 
                     // 경로 및 확장명 따기
+                    String fileNameWithExt = file.getName();
                     String pathParent = getCurrentDirectory(file.getAbsolutePath());
 
                     System.out.println(pathParent);
-                    // 새 파일
-                    File newFile = new File(pathParent + file.getName() + "_Resized" + "." + getFormatName(extension));
 
-                    //파일 쓰기
-                    ImageIO.write(scaledImage, getFormatName(extension), newFile);
+                    //기존 파일 이름바꾸기로 original 처리
+                    if(file.renameTo(new File(pathParent + fileNameWithExt + ".original_image"))) {
+                        //이름을 바꿨다면 그 자리에 리사이징된 이미지를 저장할 파일을 만듭니다.
 
-                    //처리 완료겁니다.
-                    return true;
+                        // 새 파일
+                        File newFile = new File(pathParent + fileNameWithExt);
+
+                        //파일 쓰기
+                        ImageIO.write(scaledImage, getFormatName(extension), newFile);
+
+                        //처리 완료.
+                        return true;
+                    }
                 } catch (IOException ioe) {
                     System.out.println("IOException while resizing: " + file.getAbsolutePath());
                 }
