@@ -207,8 +207,13 @@ public class ResizeProcessor {
         return getResizedDimensions(image.getWidth(),image.getHeight(),dWidth,dHeight);
     }
 
-    public static Point getResizedDimensions(final int oWidth, final int oHeight, final int dWidth, final int dHeight){
-        Point dimen = new Point(dWidth,dHeight);
+    public static Point getResizedDimensions(final int originalWidth, final int originalHeight, final int destinationWidth, final int destinationHeight){
+        Point dimen = new Point(0,0);
+
+        final int oWidth = Math.abs(originalWidth);
+        final int oHeight = Math.abs(originalHeight);
+        final int dWidth = Math.abs(destinationWidth);
+        final int dHeight = Math.abs(destinationHeight);
 
         System.out.println("original width and height "+ oWidth + " x "+ oHeight);
 
