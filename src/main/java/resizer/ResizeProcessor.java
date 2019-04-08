@@ -38,6 +38,7 @@ public class ResizeProcessor {
                             // 경로 및 확장명 따기
                             String pathParent = getCurrentDirectory(listOfFiles[i].getAbsolutePath());
 
+                            System.out.println(pathParent);
                             // 새 파일
                             File newFile = new File(pathParent + listOfFiles[i].getName() + "_Resized" + "." + getFormatName(extension));
 
@@ -128,16 +129,27 @@ public class ResizeProcessor {
         return false;
     }
 
+    /**
+     * 소속 디렉토리 경로를 슬래시까지 포함하여 보내줍니다.
+     * @param filePath 파일 전체 경로
+     * @return 파일의 소속 디렉토리 경로
+     */
     public static String getCurrentDirectory(final String filePath){
         if(filePath == null){
             return "";
         }
-        int lastIndexOfSeparator = filePath.lastIndexOf(File.pathSeparator);
+        char saperator = '/';
+        int lastIndexOfSeparator = filePath.lastIndexOf(saperator);
+        if(lastIndexOfSeparator < 0){
+            // 재시도
+            saperator = '\\';
+            lastIndexOfSeparator = filePath.lastIndexOf(saperator);
+        }
         if(lastIndexOfSeparator < 0){
             //마지막 분리자 추출 불가
             return filePath;
         }
 
-        return filePath.substring(0,lastIndexOfSeparator);
+        return filePath.substring(0,lastIndexOfSeparator)+saperator;
     }
 }
