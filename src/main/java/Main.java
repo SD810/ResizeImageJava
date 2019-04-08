@@ -45,7 +45,7 @@ public class Main {
             }
 
             File[] listOfFiles = folder.listFiles();
-            int processedFiles = ResizeProcessor.resizeImagesWithThese(listOfFiles, 512, 512);
+            int processedFiles = ResizeProcessor.resizeImagesWithThese(listOfFiles, 512, 512, false);
 
             System.out.println(processedFiles +" files has been processed");
         }

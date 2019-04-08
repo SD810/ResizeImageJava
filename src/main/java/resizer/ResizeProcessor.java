@@ -8,14 +8,17 @@ import java.io.IOException;
 
 public class ResizeProcessor {
 
+    public static int ALGORITHM_SELECTOR;
+
     /**
      * 지정된 파일 배열을 기반으로 리사이즈를 수행합니다.
      * @param listOfFiles 파일 배열
      * @param dWidth 목표 가로 (px)
      * @param dHeight 목표 세로 (px)
+     * @param stretch 찌그러뜨림
      * @return 리사이즈된 이미지 수
      */
-    public static int resizeImagesWithThese(File[] listOfFiles, int dWidth, int dHeight){
+    public static int resizeImagesWithThese(File[] listOfFiles, int dWidth, int dHeight, boolean stretch){
         // 파일 갯수
         int numOfTotalFiles = 0;
         int numOfProcessedFiles = 0;
@@ -26,7 +29,7 @@ public class ResizeProcessor {
                 // 총 파일 갯수를 셉니다
                 numOfTotalFiles++;
 
-                if(resizeImageForThis(listOfFiles[i], dWidth, dHeight)){
+                if(resizeImageForThis(listOfFiles[i], dWidth, dHeight, stretch)){
                     numOfProcessedFiles++;
                 }
             }else{
@@ -44,9 +47,10 @@ public class ResizeProcessor {
      * @param listOfPaths 파일 경로 배열
      * @param dWidth 목표 가로 (px)
      * @param dHeight 목표 세로 (px)
+     * @param stretch 찌그러뜨림
      * @return 리사이즈된 이미지 수
      */
-    public static int resizeImagesWithThese(String[] listOfPaths, int dWidth, int dHeight){
+    public static int resizeImagesWithThese(String[] listOfPaths, int dWidth, int dHeight, boolean stretch){
         // 파일 갯수
         int numOfTotalFiles = 0;
         int numOfProcessedFiles = 0;
@@ -58,7 +62,7 @@ public class ResizeProcessor {
                 // 총 파일 갯수를 셉니다
                 numOfTotalFiles++;
 
-                if(resizeImageForThis(targetFile, dWidth, dHeight)){
+                if(resizeImageForThis(targetFile, dWidth, dHeight, stretch)){
                     numOfProcessedFiles++;
                 }
             }else{
@@ -71,7 +75,15 @@ public class ResizeProcessor {
         return numOfProcessedFiles;
     }
 
-    public static boolean resizeImageForThis(File file, int dWidth, int dHeight){
+    /**
+     * 이미지를 크기조정합니다.
+     * @param file 이미지 파일
+     * @param dWidth 목표 가로 (px)
+     * @param dHeight 목표 세로 (px)
+     * @param stretch 찌그러뜨림
+     * @return
+     */
+    public static boolean resizeImageForThis(File file, int dWidth, int dHeight, boolean stretch){
         if(file.canRead() && file.canWrite()) {
             String extension = getExtension(file.getAbsolutePath());
             if(checkIfSupportedFiles(extension)){
@@ -82,7 +94,7 @@ public class ResizeProcessor {
                     //이미지 처리
                     BufferedImage imgToScale = ImageIO.read(file);
 
-                    BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, false);
+                    BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, stretch);
 
                     // 경로 및 확장명 따기
                     String fileNameWithExt = file.getName();
@@ -102,19 +114,33 @@ public class ResizeProcessor {
 
                         //처리 완료.
                         return true;
+                    }else{
+                        //파일을 이동할 수 없음
+                        System.out.println("cannot rename file: " + file.getAbsolutePath());
                     }
                 } catch (IOException ioe) {
+                    // IOException 발생
                     System.out.println("IOException while resizing: " + file.getAbsolutePath());
                 }
             }else{
+                // 미지원 파일
                 System.out.println("File is unsupported: " + file.getAbsolutePath());
             }
         }else{
+            // 파일을 읽고 쓸 수 없음
             System.out.println("File can not be read or written: " + file.getAbsolutePath());
         }
         return false;
     }
 
+    /**
+     * Image resize
+     * @param dWidth 목표 가로
+     * @param dHeight 목표 세로
+     * @param imgToScale 크기조절할 이미지
+     * @param stretch 찌그러뜨림 여부
+     * @return
+     */
     public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch){
         if(stretch) {
             return JdkProgressiveResize.resizeImage(dWidth, dHeight, imgToScale);
@@ -211,10 +237,27 @@ public class ResizeProcessor {
     private static final int ASPECT_TYPE_SAME_WH = 0; // 가로세로 같음
     private static final int ASPECT_TYPE_HEIGHT_LONG = -1; // 세로가 더 김
 
+    /**
+     * 리사이즈 될 크기를 계산합니다.
+     *
+     * @param image 이미지
+     * @param dWidth 목표 가로 (px)
+     * @param dHeight 목표 세로(px)
+     * @return Point 객체 x가 교정된 가로, y가 교정된 세로
+     */
     public static Point getResizedDimensions(BufferedImage image, final int dWidth, final int dHeight){
         return getResizedDimensions(image.getWidth(),image.getHeight(),dWidth,dHeight);
     }
 
+    /**
+     * 리사이즈 될 크기를 계산합니다.
+     *
+     * @param originalWidth 원래 가로 (px)
+     * @param originalHeight 원래 세로 (px)
+     * @param destinationWidth 목표 가로 (px)
+     * @param destinationHeight 목표 세로(px)
+     * @return Point 객체 x가 교정된 가로, y가 교정된 세로
+     */
     public static Point getResizedDimensions(final int originalWidth, final int originalHeight, final int destinationWidth, final int destinationHeight){
         Point dimen = new Point(0,0);
 
