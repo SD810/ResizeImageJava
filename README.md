@@ -21,14 +21,16 @@ dependencies {
 // listOfFiles : File[] or String[]
 // targetWidth/targetHeight : int, pixel
 // doStretch : boolean for ignoring aspect ratio
-ResizeProcessor.resizeImagesWithThese(listOfFiles, targetWidth, targetHeight, doStretch);
+// processBiggerFiles : boolean for allowing upscale
+ResizeProcessor.resizeImagesWithThese(listOfFiles, targetWidth, targetHeight, doStretch, processBiggerFiles);
 ```
 
 ```Java
 // file : File
 // targetWidth/targetHeight : int, pixel
 // doStretch : boolean for ignoring aspect ratio
-ResizeProcessor.resizeImageForThis(file, targetWidth, targetHeight, doStretch);
+// processBiggerFile : boolean for allowing upscale
+ResizeProcessor.resizeImageForThis(file, targetWidth, targetHeight, doStretch, processBiggerFile);
 ```
 
 ## Change Algorithm
