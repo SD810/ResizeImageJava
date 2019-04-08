@@ -1,6 +1,7 @@
 package resizer;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,8 @@ public class ResizeProcessor {
                         try {
                             //이미지 처리
                             BufferedImage imgToScale = ImageIO.read(listOfFiles[i]);
-                            BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale);
+
+                            BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, false);
 
                             // 경로 및 확장명 따기
                             String pathParent = getCurrentDirectory(listOfFiles[i].getAbsolutePath());
@@ -66,8 +68,13 @@ public class ResizeProcessor {
         return numOfProcessedFiles;
     }
 
-    public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale){
-        return JdkProgressiveResize.resizeImage(dWidth, dHeight, imgToScale);
+    public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch){
+        if(stretch) {
+            return JdkProgressiveResize.resizeImage(dWidth, dHeight, imgToScale);
+        }else{
+            Point dimenDest = getResizedDimensions(imgToScale, dWidth, dHeight);
+            return JdkProgressiveResize.resizeImage(dimenDest.x, dimenDest.y, imgToScale);
+        }
     }
 
     /**
@@ -151,5 +158,64 @@ public class ResizeProcessor {
         }
 
         return filePath.substring(0,lastIndexOfSeparator)+saperator;
+    }
+
+    private static final int ASPECT_TYPE_WIDTH_LONG = 1; // 가로가 더 김
+    private static final int ASPECT_TYPE_SAME_WH = 0; // 가로세로 같음
+    private static final int ASPECT_TYPE_HEIGHT_LONG = -1; // 세로가 더 김
+
+    public static Point getResizedDimensions(BufferedImage image, int dWidth, int dHeight){
+        Point dimen = new Point(dWidth,dHeight);
+        int oWidth = image.getWidth();
+        int oHeight = image.getHeight();
+
+        System.out.println("original width and height "+ oWidth + " x "+ oHeight);
+
+        int destAspectRatio = ASPECT_TYPE_SAME_WH;
+
+        if (dWidth > dHeight) {
+            destAspectRatio = ASPECT_TYPE_WIDTH_LONG;
+        } else if (dWidth < dHeight) {
+            destAspectRatio = ASPECT_TYPE_HEIGHT_LONG;
+        } else {
+            destAspectRatio = ASPECT_TYPE_SAME_WH;
+        }
+
+        int aspectType = 0;
+        if (oWidth > oHeight) {
+            aspectType = ASPECT_TYPE_WIDTH_LONG;
+        } else if (oWidth < oHeight) {
+            aspectType = ASPECT_TYPE_HEIGHT_LONG;
+        } else {
+            aspectType = ASPECT_TYPE_SAME_WH;
+        }
+
+
+        if(destAspectRatio == ASPECT_TYPE_SAME_WH) {
+
+
+            double aspectRatioReversed = 1.;
+            switch (aspectType) {
+                case ASPECT_TYPE_WIDTH_LONG:
+                    aspectRatioReversed = ((double) oHeight / (double) oWidth);
+                    dimen.x = dWidth;
+                    dimen.y = (int) ((double)dWidth * aspectRatioReversed);
+                    break;
+                default:
+                case ASPECT_TYPE_SAME_WH:
+                    dimen.x = dWidth;
+                    dimen.y = dHeight;
+                    break;
+                case ASPECT_TYPE_HEIGHT_LONG:
+                    aspectRatioReversed = ((double) oWidth / (double) oHeight);
+                    dimen.x = (int) ((double)dHeight * aspectRatioReversed);
+                    dimen.y = dHeight;
+                    break;
+            }
+
+        }
+        System.out.println("desired width and height within "+dWidth + " x "+ dHeight +" : "+dimen.x+" x "+ dimen.y);
+
+        return dimen;
     }
 }
