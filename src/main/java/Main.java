@@ -29,7 +29,7 @@ public class Main {
             File[] listOfFiles = folder.listFiles();
             int processedFiles = ResizeProcessor.resizeImagesWithThese(listOfFiles, 512, 512);
 
-            System.out.println(processedFiles +"has been processed");
+            System.out.println(processedFiles +" files has been processed");
         }
     }
 }

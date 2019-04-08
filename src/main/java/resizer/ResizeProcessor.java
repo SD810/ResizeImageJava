@@ -36,7 +36,7 @@ public class ResizeProcessor {
                             BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale);
 
                             // 경로 및 확장명 따기
-                            String pathParent = listOfFiles[i].getParent()+ File.pathSeparator;
+                            String pathParent = getCurrentDirectory(listOfFiles[i].getAbsolutePath());
 
                             // 새 파일
                             File newFile = new File(pathParent + listOfFiles[i].getName() + "_Resized" + "." + getFormatName(extension));
@@ -75,6 +75,10 @@ public class ResizeProcessor {
      * @return
      */
     public static String getExtension(final String filePath){
+        if(filePath == null){
+            //파일경로 null 추출 불가
+            return "";
+        }
         int lastIndexOfDot = filePath.lastIndexOf('.');
         if(lastIndexOfDot < 0){
             // 확장자 추출 불가
@@ -122,5 +126,18 @@ public class ResizeProcessor {
                 return true;
         }
         return false;
+    }
+
+    public static String getCurrentDirectory(final String filePath){
+        if(filePath == null){
+            return "";
+        }
+        int lastIndexOfSeparator = filePath.lastIndexOf(File.pathSeparator);
+        if(lastIndexOfSeparator < 0){
+            //마지막 분리자 추출 불가
+            return filePath;
+        }
+
+        return filePath.substring(0,lastIndexOfSeparator);
     }
 }
