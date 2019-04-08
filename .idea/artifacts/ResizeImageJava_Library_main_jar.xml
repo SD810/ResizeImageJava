@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ResizeImageJava.Library.main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ResizeImageJava_Library_main_jar</output-path>
+    <root id="archive" name="ResizeImageJava.Library.main.jar">
+      <element id="module-output" name="ResizeImageJava.Library.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.coobird/thumbnailator/0.4.8/4f10c440dd7776630aee9da4611a45032db1e041/thumbnailator-0.4.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mortennobel/java-image-scaling/0.8.6/5765b7f90f1b8f30fe3acd94aa363e746f5cf7b5/java-image-scaling-0.8.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jhlabs/filters/2.0.235/af6a2dfefef70f1ab2d7a8d1f8173f67e276b3f4/filters-2.0.235.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
