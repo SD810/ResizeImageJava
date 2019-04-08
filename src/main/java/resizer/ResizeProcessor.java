@@ -26,37 +26,8 @@ public class ResizeProcessor {
                 // 총 파일 갯수를 셉니다
                 numOfTotalFiles++;
 
-                if(listOfFiles[i].canRead() && listOfFiles[i].canWrite()) {
-                    String extension = getExtension(listOfFiles[i].getAbsolutePath());
-                    if(checkIfSupportedFiles(extension)){
-                        // 작업 시작
-                        System.out.println("Starting Job : " + listOfFiles[i].getAbsolutePath());
-                        try {
-                            //이미지 처리
-                            BufferedImage imgToScale = ImageIO.read(listOfFiles[i]);
-
-                            BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, false);
-
-                            // 경로 및 확장명 따기
-                            String pathParent = getCurrentDirectory(listOfFiles[i].getAbsolutePath());
-
-                            System.out.println(pathParent);
-                            // 새 파일
-                            File newFile = new File(pathParent + listOfFiles[i].getName() + "_Resized" + "." + getFormatName(extension));
-
-                            //파일 쓰기
-                            ImageIO.write(scaledImage, getFormatName(extension), newFile);
-
-                            //처리 완료된 파일 수를 셉니다
-                            numOfProcessedFiles ++;
-                        } catch (IOException ioe) {
-                            System.out.println("IOException while resizing: " + listOfFiles[i].getAbsolutePath());
-                        }
-                    }else{
-                        System.out.println("File is unsupported: " + listOfFiles[i].getAbsolutePath());
-                    }
-                }else{
-                    System.out.println("File can not be read or written: " + listOfFiles[i].getAbsolutePath());
+                if(resizeImageForThis(listOfFiles[i], dWidth, dHeight)){
+                    numOfProcessedFiles++;
                 }
             }else{
                 numOfNotFiles++;
@@ -66,6 +37,74 @@ public class ResizeProcessor {
                 +".\nunprocessed: "+(numOfTotalFiles-numOfProcessedFiles)
                 +"\nnot files: "+numOfNotFiles);
         return numOfProcessedFiles;
+    }
+
+    /**
+     * 지정된 파일 배열을 기반으로 리사이즈를 수행합니다.
+     * @param listOfPaths 파일 경로 배열
+     * @param dWidth 목표 가로 (px)
+     * @param dHeight 목표 세로 (px)
+     * @return 리사이즈된 이미지 수
+     */
+    public static int resizeImagesWithThese(String[] listOfPaths, int dWidth, int dHeight){
+        // 파일 갯수
+        int numOfTotalFiles = 0;
+        int numOfProcessedFiles = 0;
+        int numOfNotFiles = 0;
+        System.out.println("Total No of File Objects:"+listOfPaths.length);
+        for (int i = 0; i < listOfPaths.length; i++) {
+            File targetFile = new File(listOfPaths[i]);
+            if (targetFile.isFile()) {
+                // 총 파일 갯수를 셉니다
+                numOfTotalFiles++;
+
+                if(resizeImageForThis(targetFile, dWidth, dHeight)){
+                    numOfProcessedFiles++;
+                }
+            }else{
+                numOfNotFiles++;
+            }
+        }
+        System.out.println("DONE with "+numOfProcessedFiles+" files from total "+numOfTotalFiles
+                +".\nunprocessed: "+(numOfTotalFiles-numOfProcessedFiles)
+                +"\nnot files: "+numOfNotFiles);
+        return numOfProcessedFiles;
+    }
+
+    public static boolean resizeImageForThis(File file, int dWidth, int dHeight){
+        if(file.canRead() && file.canWrite()) {
+            String extension = getExtension(file.getAbsolutePath());
+            if(checkIfSupportedFiles(extension)){
+                // 작업 시작
+                System.out.println("Starting Job : " + file.getAbsolutePath());
+                try {
+                    //이미지 처리
+                    BufferedImage imgToScale = ImageIO.read(file);
+
+                    BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, false);
+
+                    // 경로 및 확장명 따기
+                    String pathParent = getCurrentDirectory(file.getAbsolutePath());
+
+                    System.out.println(pathParent);
+                    // 새 파일
+                    File newFile = new File(pathParent + file.getName() + "_Resized" + "." + getFormatName(extension));
+
+                    //파일 쓰기
+                    ImageIO.write(scaledImage, getFormatName(extension), newFile);
+
+                    //처리 완료겁니다.
+                    return true;
+                } catch (IOException ioe) {
+                    System.out.println("IOException while resizing: " + file.getAbsolutePath());
+                }
+            }else{
+                System.out.println("File is unsupported: " + file.getAbsolutePath());
+            }
+        }else{
+            System.out.println("File can not be read or written: " + file.getAbsolutePath());
+        }
+        return false;
     }
 
     public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch){
