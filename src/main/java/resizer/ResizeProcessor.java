@@ -312,6 +312,13 @@ public class ResizeProcessor {
             dimen.x = (int)Math.round(calculatedWidth);
             dimen.y = (int)Math.round(calculatedHeight);
         }
+        //0으로 리사이징 되지 않게 1px를 최소값으로 합니다
+        if(dimen.x <= 0){
+            dimen.x = 1;
+        }
+        if(dimen.y <= 0){
+            dimen.y = 1;
+        }
         System.out.println("desired width and height within "+dWidth + " x "+ dHeight +" : "+dimen.x+" x "+ dimen.y);
 
         return dimen;
