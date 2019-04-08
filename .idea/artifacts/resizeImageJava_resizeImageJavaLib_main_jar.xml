@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="resizeImageJava.resizeImageJavaLib.main:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/resizeImageJava_resizeImageJavaLib_main_jar</output-path>
-    <root id="archive" name="resizeImageJava.resizeImageJavaLib.main.jar">
-      <element id="module-output" name="resizeImageJava.resizeImageJavaLib.main" />
-    </root>
-  </artifact>
-</component>
