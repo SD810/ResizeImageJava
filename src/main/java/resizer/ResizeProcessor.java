@@ -240,7 +240,7 @@ public class ResizeProcessor {
                         // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
                         break;
                 }
-            }else if(destAspectType == ASPECT_TYPE_HEIGHT_LONG){
+            }else{// if(destAspectType == ASPECT_TYPE_HEIGHT_LONG){
                 // 목적 종횡비가 세로가 긴 경우
                 switch (aspectType) {
                     case ASPECT_TYPE_WIDTH_LONG:
