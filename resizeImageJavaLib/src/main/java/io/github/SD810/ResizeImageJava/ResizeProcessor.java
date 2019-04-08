@@ -107,8 +107,6 @@ public class ResizeProcessor {
                     String fileNameWithExt = file.getName();
                     String pathParent = getCurrentDirectory(file.getAbsolutePath());
 
-                    System.out.println(pathParent);
-
                     //기존 파일 이름바꾸기로 original 처리
                     if(file.renameTo(new File(pathParent + fileNameWithExt + ".original_image"))) {
                         //이름을 바꿨다면 그 자리에 리사이징된 이미지를 저장할 파일을 만듭니다.

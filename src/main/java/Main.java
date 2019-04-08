@@ -38,7 +38,7 @@ public class Main {
             File folder = new File(pathname);
             if( !
                     (folder.getAbsolutePath().contains("Pictures")
-                     && folder.getAbsolutePath().contains("Screenshots"))
+                            && folder.getAbsolutePath().contains("Screenshots"))
             ){
                 System.out.println("Only works for customed location, for testing.  program will exit.");
                 return ;

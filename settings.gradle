@@ -1,2 +1,2 @@
-include 'Library'
-findProject('Library')?.name = 'ResizeImageJava'
+rootProject.name = 'resizeImageJava'
+include 'resizeImageJavaLib'
