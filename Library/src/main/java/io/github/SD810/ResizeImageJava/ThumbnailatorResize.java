@@ -1,4 +1,4 @@
-package resizer;
+package io.github.SD810.ResizeImageJava;
 
 import net.coobird.thumbnailator.makers.FixedSizeThumbnailMaker;
 import net.coobird.thumbnailator.resizers.DefaultResizerFactory;

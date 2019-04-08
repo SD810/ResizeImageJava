@@ -1,0 +1,4 @@
+include 'Library'
+findProject(':Library')?.name = 'ResizeImageJava'
+include 'test'
+

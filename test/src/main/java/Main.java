@@ -1,4 +1,4 @@
-import resizer.ResizeProcessor;
+import io.github.SD810.ResizeImageJava.ResizeProcessor;
 
 import java.awt.*;
 import java.io.File;

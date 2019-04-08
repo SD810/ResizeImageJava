@@ -1,4 +1,4 @@
-package resizer;
+package io.github.SD810.ResizeImageJava;
 
 import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;

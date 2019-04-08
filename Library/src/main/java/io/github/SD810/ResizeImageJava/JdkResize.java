@@ -1,4 +1,4 @@
-package resizer;
+package io.github.SD810.ResizeImageJava;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
