@@ -241,7 +241,7 @@ public class ResizeProcessor {
                     //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
                     aspectRatioReversed = ((double) oHeight / (double) oWidth);
                     dimen.x = dWidth;
-                    dimen.y = (int) ((double)dWidth * aspectRatioReversed);
+                    dimen.y = (int)Math.round ((double)dWidth * aspectRatioReversed);
                     break;
                 default:
                 case ASPECT_TYPE_SAME_WH:
@@ -252,7 +252,7 @@ public class ResizeProcessor {
                 case ASPECT_TYPE_HEIGHT_LONG:
                     // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
                     aspectRatioReversed = ((double) oWidth / (double) oHeight);
-                    dimen.x = (int) ((double)dHeight * aspectRatioReversed);
+                    dimen.x = (int)Math.round ((double)dHeight * aspectRatioReversed);
                     dimen.y = dHeight;
                     break;
             }
@@ -309,8 +309,8 @@ public class ResizeProcessor {
                 break;
             }
 
-            dimen.x = (int) calculatedWidth;
-            dimen.y = (int) calculatedHeight;
+            dimen.x = (int)Math.round(calculatedWidth);
+            dimen.y = (int)Math.round(calculatedHeight);
         }
         System.out.println("desired width and height within "+dWidth + " x "+ dHeight +" : "+dimen.x+" x "+ dimen.y);
 
