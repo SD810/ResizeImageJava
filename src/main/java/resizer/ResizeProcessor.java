@@ -8,7 +8,14 @@ import java.io.IOException;
 
 public class ResizeProcessor {
 
-    public static int ALGORITHM_SELECTOR;
+    //https://stackoverflow.com/a/36367652
+    public static final int RESIZER_JDK_PROGRESSIVE = 1;
+    public static final int RESIZER_JDK_DIRECT = 2;
+    public static final int RESIZER_LANCOZ = 3;
+    public static final int RESIZER_THUMBNAILATOR = 4;
+
+    // 알고리즘 선택용 변수
+    public static int resizerAlgorithm = RESIZER_JDK_PROGRESSIVE;
 
     /**
      * 지정된 파일 배열을 기반으로 리사이즈를 수행합니다.
@@ -143,10 +150,33 @@ public class ResizeProcessor {
      */
     public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch){
         if(stretch) {
-            return JdkProgressiveResize.resizeImage(dWidth, dHeight, imgToScale);
+            return resizeImageProc(dWidth, dHeight, imgToScale);
         }else{
             Point dimenDest = getResizedDimensions(imgToScale, dWidth, dHeight);
-            return JdkProgressiveResize.resizeImage(dimenDest.x, dimenDest.y, imgToScale);
+            return resizeImageProc(dimenDest.x, dimenDest.y, imgToScale);
+        }
+    }
+
+    /**
+     * 리사이즈 처리 로직
+     * 선택된 알고리즘에 따라 리사이즈 진행
+     * 기본값은 JDK_PROGRESSIVE
+     * @param targetWidth 대상 가로 (px)
+     * @param targetHeight 대상 세로 (px)
+     * @param imgToScale 리사이즈할 이미지
+     * @return
+     */
+    private static BufferedImage resizeImageProc(int targetWidth, int targetHeight, BufferedImage imgToScale){
+        switch(resizerAlgorithm){
+            default:
+            case RESIZER_JDK_PROGRESSIVE:
+                return JdkProgressiveResize.resizeImage(targetWidth,targetHeight, imgToScale);
+            case RESIZER_JDK_DIRECT:
+                return JdkResize.resizeImage(targetWidth, targetHeight, imgToScale);
+            case RESIZER_LANCOZ:
+                return LancozResize.resizeImage(targetWidth, targetHeight, imgToScale);
+            case RESIZER_THUMBNAILATOR:
+                return ThumbnailatorResize.resizeImage(targetWidth, targetHeight, imgToScale);
         }
     }
 
@@ -155,7 +185,7 @@ public class ResizeProcessor {
      * @param filePath 파일 경로
      * @return
      */
-    public static String getExtension(final String filePath){
+    private static String getExtension(final String filePath){
         if(filePath == null){
             //파일경로 null 추출 불가
             return "";
@@ -177,7 +207,7 @@ public class ResizeProcessor {
      * @param ext 확장명
      * @return 포맷이름
      */
-    public static String getFormatName(String ext){
+    private static String getFormatName(String ext){
         ext = ext.toLowerCase();
         switch(ext){
             case "jpeg":
@@ -214,7 +244,7 @@ public class ResizeProcessor {
      * @param filePath 파일 전체 경로
      * @return 파일의 소속 디렉토리 경로
      */
-    public static String getCurrentDirectory(final String filePath){
+    private static String getCurrentDirectory(final String filePath){
         if(filePath == null){
             return "";
         }
@@ -245,7 +275,7 @@ public class ResizeProcessor {
      * @param dHeight 목표 세로(px)
      * @return Point 객체 x가 교정된 가로, y가 교정된 세로
      */
-    public static Point getResizedDimensions(BufferedImage image, final int dWidth, final int dHeight){
+    private static Point getResizedDimensions(BufferedImage image, final int dWidth, final int dHeight){
         return getResizedDimensions(image.getWidth(),image.getHeight(),dWidth,dHeight);
     }
 
