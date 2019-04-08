@@ -26,27 +26,31 @@ public class ResizeProcessor {
                 numOfTotalFiles++;
 
                 if(listOfFiles[i].canRead() && listOfFiles[i].canWrite()) {
-                    // 작업 시작
-                    System.out.println("Starting Job : " + listOfFiles[i].getAbsolutePath());
-                    try {
-                        //이미지 처리
-                        BufferedImage imgToScale = ImageIO.read(listOfFiles[i]);
-                        BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale);
+                    String extension = getExtension(listOfFiles[i].getAbsolutePath());
+                    if(checkIfSupportedFiles(extension)){
+                        // 작업 시작
+                        System.out.println("Starting Job : " + listOfFiles[i].getAbsolutePath());
+                        try {
+                            //이미지 처리
+                            BufferedImage imgToScale = ImageIO.read(listOfFiles[i]);
+                            BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale);
 
-                        // 경로 및 확장명 따기
-                        String pathParent = listOfFiles[i].getParent()+ File.pathSeparator;
-                        String extension = getExtension(listOfFiles[i].getAbsolutePath());
+                            // 경로 및 확장명 따기
+                            String pathParent = listOfFiles[i].getParent()+ File.pathSeparator;
 
-                        // 새 파일
-                        File newFile = new File(pathParent + listOfFiles[i].getName() + "_Resized" + "." + getFormatName(extension));
+                            // 새 파일
+                            File newFile = new File(pathParent + listOfFiles[i].getName() + "_Resized" + "." + getFormatName(extension));
 
-                        //파일 쓰기
-                        ImageIO.write(scaledImage, getFormatName(extension), newFile);
+                            //파일 쓰기
+                            ImageIO.write(scaledImage, getFormatName(extension), newFile);
 
-                        //처리 완료된 파일 수를 셉니다
-                        numOfProcessedFiles ++;
-                    } catch (IOException ioe) {
-                        System.out.println("IOException while resizing: " + listOfFiles[i].getAbsolutePath());
+                            //처리 완료된 파일 수를 셉니다
+                            numOfProcessedFiles ++;
+                        } catch (IOException ioe) {
+                            System.out.println("IOException while resizing: " + listOfFiles[i].getAbsolutePath());
+                        }
+                    }else{
+                        System.out.println("File is unsupported: " + listOfFiles[i].getAbsolutePath());
                     }
                 }else{
                     System.out.println("File can not be read or written: " + listOfFiles[i].getAbsolutePath());
@@ -80,7 +84,7 @@ public class ResizeProcessor {
             // 더 추출할 문자열이 없습니다.
             return "";
         }
-        return filePath.substring(lastIndexOfDot+1);
+        return filePath.substring(lastIndexOfDot+1).toLowerCase();
     }
 
     /**
@@ -88,7 +92,8 @@ public class ResizeProcessor {
      * @param ext 확장명
      * @return 포맷이름
      */
-    public static String getFormatName(final String ext){
+    public static String getFormatName(String ext){
+        ext = ext.toLowerCase();
         switch(ext){
             case "jpeg":
             case "jpg":
@@ -99,5 +104,23 @@ public class ResizeProcessor {
             case "png":
                 return "png";
         }
+    }
+
+    /**
+     * 지원 파일인지 확인합니다.
+     *
+     * @param ext 확장명
+     * @return jpg/jpeg gif png 세가지만 true
+     */
+    public static boolean checkIfSupportedFiles(String ext){
+        ext = ext.toLowerCase();
+        switch(ext){
+            case"jpeg":
+            case"jpg":
+            case"gif":
+            case"png":
+                return true;
+        }
+        return false;
     }
 }
