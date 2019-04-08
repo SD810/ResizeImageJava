@@ -165,13 +165,15 @@ public class ResizeProcessor {
     private static final int ASPECT_TYPE_HEIGHT_LONG = -1; // 세로가 더 김
 
     public static Point getResizedDimensions(BufferedImage image, final int dWidth, final int dHeight){
+        return getResizedDimensions(image.getWidth(),image.getHeight(),dWidth,dHeight);
+    }
+
+    public static Point getResizedDimensions(final int oWidth, final int oHeight, final int dWidth, final int dHeight){
         Point dimen = new Point(dWidth,dHeight);
-        int oWidth = image.getWidth();
-        int oHeight = image.getHeight();
 
         System.out.println("original width and height "+ oWidth + " x "+ oHeight);
 
-        int destAspectType = ASPECT_TYPE_SAME_WH;
+        int destAspectType;
 
         if (dWidth > dHeight) {
             destAspectType = ASPECT_TYPE_WIDTH_LONG;
@@ -181,7 +183,7 @@ public class ResizeProcessor {
             destAspectType = ASPECT_TYPE_SAME_WH;
         }
 
-        int aspectType = 0;
+        int aspectType;
         if (oWidth > oHeight) {
             aspectType = ASPECT_TYPE_WIDTH_LONG;
         } else if (oWidth < oHeight) {
@@ -240,7 +242,7 @@ public class ResizeProcessor {
                         calculatedHeight = destWidth * aspectRatioHW;
 
                         if(calculatedHeight > destHeight){
-                            // 초과된 경우
+                            // 세로가 삐져나간 경우
                             calculatedWidth = destHeight * aspectRatioWH;
                             calculatedHeight = destHeight;
                         }
@@ -248,9 +250,18 @@ public class ResizeProcessor {
                     default:
                     case ASPECT_TYPE_SAME_WH:
                         // 가로세로가 같습니다.
+                        calculatedWidth = destHeight;
+                        calculatedHeight = destHeight;
                         break;
                     case ASPECT_TYPE_HEIGHT_LONG:
                         // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
+                        calculatedWidth = destHeight * aspectRatioWH;
+                        calculatedHeight = destHeight;
+                        if(calculatedWidth > destWidth){
+                            //가로가 삐져나간 경우
+                            calculatedWidth = destWidth;
+                            calculatedHeight = destWidth * aspectRatioHW;
+                        }
                         break;
                 }
             }else{// if(destAspectType == ASPECT_TYPE_HEIGHT_LONG){
@@ -262,6 +273,8 @@ public class ResizeProcessor {
                     default:
                     case ASPECT_TYPE_SAME_WH:
                         // 가로세로가 같습니다.
+                        calculatedWidth = destWidth;
+                        calculatedHeight = destWidth;
                         break;
                     case ASPECT_TYPE_HEIGHT_LONG:
                         // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
@@ -269,7 +282,7 @@ public class ResizeProcessor {
                         calculatedHeight = destHeight;
 
                         if(calculatedWidth > destWidth){
-                            // 초과된 경우
+                            //가로가 삐져나간 경우
                             calculatedWidth = destWidth;
                             calculatedHeight = destWidth * aspectRatioHW;
                         }
