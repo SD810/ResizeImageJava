@@ -168,11 +168,11 @@ public class ResizeProcessor {
             boolean doResize = false;
 
             //가로가 제시 가로보다 크면 리사이즈 해야죠
-            if(imgToScale.getWidth() >= dWidth){
+            if(imgToScale.getWidth() > dWidth){
                 doResize = true;
             }
             //세로가 제시 세로보다 크면 리사이즈 해야죠
-            if(imgToScale.getHeight() >= dHeight){
+            if(imgToScale.getHeight() > dHeight){
                 doResize = true;
             }
 
