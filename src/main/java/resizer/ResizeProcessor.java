@@ -89,7 +89,7 @@ public class ResizeProcessor {
             // 더 추출할 문자열이 없습니다.
             return "";
         }
-        return filePath.substring(lastIndexOfDot+1).toLowerCase();
+        return filePath.substring(lastIndexOfDot+1);
     }
 
     /**
