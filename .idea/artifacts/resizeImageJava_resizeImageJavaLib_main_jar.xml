@@ -3,9 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/resizeImageJava_resizeImageJavaLib_main_jar</output-path>
     <root id="archive" name="resizeImageJava.resizeImageJavaLib.main.jar">
       <element id="module-output" name="resizeImageJava.resizeImageJavaLib.main" />
-      <element id="library" level="project" name="Gradle: com.jhlabs:filters:2.0.235" />
-      <element id="library" level="project" name="Gradle: com.mortennobel:java-image-scaling:0.8.6" />
-      <element id="library" level="project" name="Gradle: net.coobird:thumbnailator:0.4.8" />
     </root>
   </artifact>
 </component>
