@@ -222,45 +222,93 @@ public class ResizeProcessor {
             final double aspectRatioWH =  ((double) oWidth / (double) oHeight);
             final double aspectRatioHW =  ((double) oHeight / (double) oWidth);
 
-            //final double destAspectRatioWH =  ((double) dWidth / (double) dHeight);
-            //final double destAspectRatioHW =  ((double) dHeight / (double) dWidth);
+            final double destAspectRatioWH =  ((double) dWidth / (double) dHeight);
+            final double destAspectRatioHW =  ((double) dHeight / (double) dWidth);
 
-            //final double origWidth = (double)oWidth;
-            //final double origHeight = (double)oHeight;
+            final double origWidth = (double)oWidth;
+            final double origHeight = (double)oHeight;
             final double destWidth = (double)dWidth;
             final double destHeight = (double)dHeight;
 
             double calculatedWidth = 0.;
             double calculatedHeight = 0.;
 
-            switch (aspectType) {
-            case ASPECT_TYPE_WIDTH_LONG:
-                //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
-                calculatedWidth = destWidth;
-                calculatedHeight = destWidth * aspectRatioHW;
+            if(destAspectType == ASPECT_TYPE_WIDTH_LONG) {
+                // 목적 종횡비가 가로가 긴 경우
+                switch (aspectType) {
+                    case ASPECT_TYPE_WIDTH_LONG:
+                        //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
+                        calculatedWidth = destWidth;
+                        calculatedHeight = destWidth * aspectRatioHW;
 
-                if(calculatedHeight > destHeight){
-                    // 세로가 삐져나간 경우 가로를 재조정합니다.
-                    calculatedWidth = destHeight * aspectRatioWH;
-                    calculatedHeight = destHeight;
+                        if(calculatedHeight > destHeight){
+                            // 세로가 삐져나간 경우 가로를 재조정합니다.
+                            calculatedWidth = destHeight * aspectRatioWH;
+                            calculatedHeight = destHeight;
+                        }
+                        break;
+                    default:
+                    case ASPECT_TYPE_SAME_WH:
+                        // 가로세로가 같습니다. 짧은 세로쪽 길이를 우선합니다.
+                        if(destAspectType == ASPECT_TYPE_WIDTH_LONG) {
+                            // 목적 종횡비가 가로가 긴 경우
+                            calculatedWidth = destHeight;
+                            calculatedHeight = destHeight;
+                        } else {
+                            // 목적 종횡비가 세로가 긴 경우
+                            calculatedWidth = destWidth;
+                            calculatedHeight = destWidth;
+                        }
+                        break;
+                    case ASPECT_TYPE_HEIGHT_LONG:
+                        // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
+                        calculatedWidth = destHeight * aspectRatioWH;
+                        calculatedHeight = destHeight;
+                        if(calculatedWidth > destWidth){
+                            //가로가 삐져나간 경우 세로를 재조정합니다.
+                            calculatedWidth = destWidth;
+                            calculatedHeight = destWidth * aspectRatioHW;
+                        }
+                        break;
                 }
-                break;
-            default:
-            case ASPECT_TYPE_SAME_WH:
-                // 가로세로가 같습니다.
-                calculatedWidth = destWidth;
-                calculatedHeight = destWidth;
-                break;
-            case ASPECT_TYPE_HEIGHT_LONG:
-                // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
-                calculatedWidth = destHeight * aspectRatioWH;
-                calculatedHeight = destHeight;
-                if(calculatedWidth > destWidth){
-                    //가로가 삐져나간 경우 세로를 재조정합니다.
-                    calculatedWidth = destWidth;
-                    calculatedHeight = destWidth * aspectRatioHW;
+            }else{// if(destAspectType == ASPECT_TYPE_HEIGHT_LONG){
+
+                switch (aspectType) {
+                    case ASPECT_TYPE_WIDTH_LONG:
+                        //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
+                        calculatedWidth = destWidth;
+                        calculatedHeight = destWidth * aspectRatioHW;
+
+                        if(calculatedHeight > destHeight){
+                            // 세로가 삐져나간 경우 가로를 재조정합니다.
+                            calculatedWidth = destHeight * aspectRatioWH;
+                            calculatedHeight = destHeight;
+                        }
+                        break;
+                    default:
+                    case ASPECT_TYPE_SAME_WH:
+                        // 가로세로가 같습니다.
+                        if(destAspectType == ASPECT_TYPE_WIDTH_LONG) {
+                            // 목적 종횡비가 가로가 긴 경우
+                            calculatedWidth = destHeight;
+                            calculatedHeight = destHeight;
+                        } else {
+                            // 목적 종횡비가 세로가 긴 경우
+                            calculatedWidth = destWidth;
+                            calculatedHeight = destWidth;
+                        }
+                        break;
+                    case ASPECT_TYPE_HEIGHT_LONG:
+                        // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
+                        calculatedWidth = destHeight * aspectRatioWH;
+                        calculatedHeight = destHeight;
+                        if(calculatedWidth > destWidth){
+                            //가로가 삐져나간 경우 세로를 재조정합니다.
+                            calculatedWidth = destWidth;
+                            calculatedHeight = destWidth * aspectRatioHW;
+                        }
+                        break;
                 }
-                break;
             }
 
             dimen.x = (int) calculatedWidth;
