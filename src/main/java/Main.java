@@ -1,11 +1,29 @@
 import resizer.ResizeProcessor;
 
+import java.awt.*;
 import java.io.File;
 
 public class Main {
 
+    private static final boolean TEST_MODE = false;
+    private static final Point[] DIMENS = {new Point(400,300), new Point(300,300), new Point(300, 400)};
+
+
     public static void main(String[] args) {
         System.out.println("ResizeImageJava Main");
+
+
+        if(TEST_MODE){
+            final int dWidth = 100;
+            final int dHeight = 50;
+            System.out.println("TEST MODE BEGIN for w:"+ dWidth+" x h:"+dHeight);
+            for (Point dimen : DIMENS){
+                Point result = ResizeProcessor.getResizedDimensions(dimen.x,dimen.y,dWidth,dHeight);
+                System.out.println("from- w:"+dimen.x+" x h:"+dimen.y+" // to- w:"+result.x+" x h:"+result.y);
+            }
+            System.out.println("TEST MODE ENDS");
+            return ;
+        }
 
         if(args.length <= 0){
             System.out.println("no args provided. program will exit.");
