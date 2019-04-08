@@ -23,9 +23,10 @@ public class ResizeProcessor {
      * @param dWidth 목표 가로 (px)
      * @param dHeight 목표 세로 (px)
      * @param stretch 찌그러뜨림
+     * @param processBiggerFiles 큰 파일을 생성할지 여부
      * @return 리사이즈된 이미지 수
      */
-    public static int resizeImagesWithThese(File[] listOfFiles, int dWidth, int dHeight, boolean stretch){
+    public static int resizeImagesWithThese(File[] listOfFiles, int dWidth, int dHeight, boolean stretch, boolean processBiggerFiles){
         // 파일 갯수
         int numOfTotalFiles = 0;
         int numOfProcessedFiles = 0;
@@ -36,7 +37,7 @@ public class ResizeProcessor {
                 // 총 파일 갯수를 셉니다
                 numOfTotalFiles++;
 
-                if(resizeImageForThis(listOfFiles[i], dWidth, dHeight, stretch)){
+                if(resizeImageForThis(listOfFiles[i], dWidth, dHeight, stretch, processBiggerFiles)){
                     numOfProcessedFiles++;
                 }
             }else{
@@ -55,9 +56,10 @@ public class ResizeProcessor {
      * @param dWidth 목표 가로 (px)
      * @param dHeight 목표 세로 (px)
      * @param stretch 찌그러뜨림
+     * @param processBiggerFiles 큰 파일을 생성할지 여부
      * @return 리사이즈된 이미지 수
      */
-    public static int resizeImagesWithThese(String[] listOfPaths, int dWidth, int dHeight, boolean stretch){
+    public static int resizeImagesWithThese(String[] listOfPaths, int dWidth, int dHeight, boolean stretch, boolean processBiggerFiles){
         // 파일 갯수
         int numOfTotalFiles = 0;
         int numOfProcessedFiles = 0;
@@ -69,7 +71,7 @@ public class ResizeProcessor {
                 // 총 파일 갯수를 셉니다
                 numOfTotalFiles++;
 
-                if(resizeImageForThis(targetFile, dWidth, dHeight, stretch)){
+                if(resizeImageForThis(targetFile, dWidth, dHeight, stretch, processBiggerFiles)){
                     numOfProcessedFiles++;
                 }
             }else{
@@ -88,9 +90,10 @@ public class ResizeProcessor {
      * @param dWidth 목표 가로 (px)
      * @param dHeight 목표 세로 (px)
      * @param stretch 찌그러뜨림
+     * @param processBiggerFiles 큰 파일을 생성할지 여부
      * @return
      */
-    public static boolean resizeImageForThis(File file, int dWidth, int dHeight, boolean stretch){
+    public static boolean resizeImageForThis(File file, int dWidth, int dHeight, boolean stretch, boolean processBiggerFiles){
         if(file.canRead() && file.canWrite()) {
             String extension = getExtension(file.getAbsolutePath());
             if(checkIfSupportedFiles(extension)){
@@ -101,7 +104,13 @@ public class ResizeProcessor {
                     //이미지 처리
                     BufferedImage imgToScale = ImageIO.read(file);
 
-                    BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, stretch);
+                    BufferedImage scaledImage = resizeImage(dWidth, dHeight, imgToScale, stretch, processBiggerFiles);
+
+                    if(scaledImage == null){
+                        //리사이즈가 되지 않았습니다.
+                        System.out.println("resize not done (size smaller than target, etc): " + file.getAbsolutePath());
+                        return false;
+                    }
 
                     // 경로 및 확장명 따기
                     String fileNameWithExt = file.getName();
@@ -144,14 +153,36 @@ public class ResizeProcessor {
      * @param dHeight 목표 세로
      * @param imgToScale 크기조절할 이미지
      * @param stretch 찌그러뜨림 여부
+     * @param processBiggerFiles 큰 파일을 생성할지 여부
      * @return
      */
-    public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch){
+    public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch, boolean processBiggerFiles){
         if(stretch) {
             return resizeImageProc(dWidth, dHeight, imgToScale);
         }else{
-            Point dimenDest = getResizedDimensions(imgToScale, dWidth, dHeight);
-            return resizeImageProc(dimenDest.x, dimenDest.y, imgToScale);
+            boolean doResize = false;
+
+            //가로가 제시 가로보다 크면 리사이즈 해야죠
+            if(imgToScale.getWidth() >= dWidth){
+                doResize = true;
+            }
+            //세로가 제시 세로보다 크면 리사이즈 해야죠
+            if(imgToScale.getHeight() >= dHeight){
+                doResize = true;
+            }
+
+            if( ! doResize){
+                //작아서 리사이즈 할 필요가 없지만
+                //일부러 크게라도 리사이즈 해야한다면?
+                doResize = processBiggerFiles;
+            }
+
+            if(doResize) {
+                Point dimenDest = getResizedDimensions(imgToScale, dWidth, dHeight);
+                return resizeImageProc(dimenDest.x, dimenDest.y, imgToScale);
+            }else{
+                return null;
+            }
         }
     }
 
