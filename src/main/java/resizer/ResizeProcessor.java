@@ -171,14 +171,14 @@ public class ResizeProcessor {
 
         System.out.println("original width and height "+ oWidth + " x "+ oHeight);
 
-        int destAspectRatio = ASPECT_TYPE_SAME_WH;
+        int destAspectType = ASPECT_TYPE_SAME_WH;
 
         if (dWidth > dHeight) {
-            destAspectRatio = ASPECT_TYPE_WIDTH_LONG;
+            destAspectType = ASPECT_TYPE_WIDTH_LONG;
         } else if (dWidth < dHeight) {
-            destAspectRatio = ASPECT_TYPE_HEIGHT_LONG;
+            destAspectType = ASPECT_TYPE_HEIGHT_LONG;
         } else {
-            destAspectRatio = ASPECT_TYPE_SAME_WH;
+            destAspectType = ASPECT_TYPE_SAME_WH;
         }
 
         int aspectType = 0;
@@ -191,28 +191,73 @@ public class ResizeProcessor {
         }
 
 
-        if(destAspectRatio == ASPECT_TYPE_SAME_WH) {
+        if(destAspectType == ASPECT_TYPE_SAME_WH) {
 
 
             double aspectRatioReversed = 1.;
             switch (aspectType) {
                 case ASPECT_TYPE_WIDTH_LONG:
+                    //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
                     aspectRatioReversed = ((double) oHeight / (double) oWidth);
                     dimen.x = dWidth;
                     dimen.y = (int) ((double)dWidth * aspectRatioReversed);
                     break;
                 default:
                 case ASPECT_TYPE_SAME_WH:
+                    // 가로세로가 같습니다.
                     dimen.x = dWidth;
                     dimen.y = dHeight;
                     break;
                 case ASPECT_TYPE_HEIGHT_LONG:
+                    // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
                     aspectRatioReversed = ((double) oWidth / (double) oHeight);
                     dimen.x = (int) ((double)dHeight * aspectRatioReversed);
                     dimen.y = dHeight;
                     break;
             }
 
+        } else {
+            double aspectRatioWH =  ((double) oWidth / (double) oHeight);
+            double aspectRatioHW =  ((double) oHeight / (double) oWidth);
+
+            double destAspectRatioWH =  ((double) dWidth / (double) dHeight);
+            double destAspectRatioHW =  ((double) dHeight / (double) dWidth);
+
+            int calculatedWidth = 0;
+            int calculatedHeight = 0;
+
+            if(destAspectType == ASPECT_TYPE_WIDTH_LONG){
+                // 목적 종횡비가 가로가 긴 경우
+                switch (aspectType) {
+                    case ASPECT_TYPE_WIDTH_LONG:
+                        //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
+                        break;
+                    default:
+                    case ASPECT_TYPE_SAME_WH:
+                        // 가로세로가 같습니다.
+                        break;
+                    case ASPECT_TYPE_HEIGHT_LONG:
+                        // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
+                        break;
+                }
+            }else if(destAspectType == ASPECT_TYPE_HEIGHT_LONG){
+                // 목적 종횡비가 세로가 긴 경우
+                switch (aspectType) {
+                    case ASPECT_TYPE_WIDTH_LONG:
+                        //가로가 깁니다. 세로는 가로 * 종횡비 입니다.
+                        break;
+                    default:
+                    case ASPECT_TYPE_SAME_WH:
+                        // 가로세로가 같습니다.
+                        break;
+                    case ASPECT_TYPE_HEIGHT_LONG:
+                        // 세로가 깁니다. 가로는 세로 * 종횡비 입니다.
+                        break;
+                }
+            }
+
+            dimen.x = calculatedWidth;
+            dimen.y = calculatedHeight;
         }
         System.out.println("desired width and height within "+dWidth + " x "+ dHeight +" : "+dimen.x+" x "+ dimen.y);
 
