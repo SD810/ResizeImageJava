@@ -4,16 +4,16 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds/
  */
-plugins {
-    id 'java'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation 'com.mortennobel:java-image-scaling:0.8.6'
