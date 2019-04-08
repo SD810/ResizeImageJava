@@ -157,6 +157,11 @@ public class ResizeProcessor {
      * @return
      */
     public static BufferedImage resizeImage(int dWidth, int dHeight, BufferedImage imgToScale, boolean stretch, boolean processBiggerFiles){
+        if(imgToScale == null){
+            // 이미지가 null이면 처리할 수 없습니다.
+            return null;
+        }
+
         if(stretch) {
             return resizeImageProc(dWidth, dHeight, imgToScale);
         }else{
